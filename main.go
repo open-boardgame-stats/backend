@@ -1,7 +1,7 @@
 package main
 
-import "fmt"
+import "github.com/open-boardgame-stats/backend/cmd"
 
 func main() {
-	fmt.Println("Hello world")
+	cmd.Execute()
 }
