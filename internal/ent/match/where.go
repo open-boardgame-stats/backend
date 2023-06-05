@@ -54,25 +54,21 @@ func IDLTE(id guidgql.GUID) predicate.Match {
 	return predicate.Match(sql.FieldLTE(FieldID, id))
 }
 
-// HasGame applies the HasEdge predicate on the "game" edge.
-func HasGame() predicate.Match {
+// HasGameVersion applies the HasEdge predicate on the "game_version" edge.
+func HasGameVersion() predicate.Match {
 	return predicate.Match(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, GameTable, GameColumn),
+			sqlgraph.Edge(sqlgraph.M2O, true, GameVersionTable, GameVersionColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})
 }
 
-// HasGameWith applies the HasEdge predicate on the "game" edge with a given conditions (other predicates).
-func HasGameWith(preds ...predicate.Game) predicate.Match {
+// HasGameVersionWith applies the HasEdge predicate on the "game_version" edge with a given conditions (other predicates).
+func HasGameVersionWith(preds ...predicate.GameVersion) predicate.Match {
 	return predicate.Match(func(s *sql.Selector) {
-		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(GameInverseTable, FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, GameTable, GameColumn),
-		)
+		step := newGameVersionStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)
@@ -95,11 +91,7 @@ func HasPlayers() predicate.Match {
 // HasPlayersWith applies the HasEdge predicate on the "players" edge with a given conditions (other predicates).
 func HasPlayersWith(preds ...predicate.Player) predicate.Match {
 	return predicate.Match(func(s *sql.Selector) {
-		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(PlayersInverseTable, FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, false, PlayersTable, PlayersPrimaryKey...),
-		)
+		step := newPlayersStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)
@@ -122,11 +114,7 @@ func HasStats() predicate.Match {
 // HasStatsWith applies the HasEdge predicate on the "stats" edge with a given conditions (other predicates).
 func HasStatsWith(preds ...predicate.Statistic) predicate.Match {
 	return predicate.Match(func(s *sql.Selector) {
-		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(StatsInverseTable, FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, StatsTable, StatsColumn),
-		)
+		step := newStatsStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)
